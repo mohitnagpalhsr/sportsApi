@@ -25,6 +25,10 @@ namespace SportsEventProject.Controllers
         public async Task<ActionResult<Event>> GetSportByName(string name)
         {
             Sport s = await db.Sports.SingleOrDefaultAsync(x => x.SportsName == name);
+            
+            if(s is null)
+            return NotFound();
+            else
             return Ok(s);
         }
     }

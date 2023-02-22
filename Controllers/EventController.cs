@@ -37,21 +37,38 @@ namespace SportsEventProject.Controllers
             return Ok();
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> DeleteEvent(int id)
+        // [HttpDelete]
+        // public async Task<ActionResult> DeleteEvent(int id)
+        // {
+        //     Event e = db.Events.Find(id);
+        //     db.Events.Remove(e);
+        //     await db.SaveChangesAsync();
+        //     return Ok();
+        // }
+        [HttpGet]
+        [Route("EventById")]
+        public async Task<ActionResult<Event>> GetEventById(int id)
         {
-            Event e = db.Events.Find(id);
-            db.Events.Remove(e);
-            await db.SaveChangesAsync();
-            return Ok();
+            Event e = await db.Events.SingleOrDefaultAsync(x=>x.EventId==id);
+            
+            if(e is null)
+            return NotFound();
+            else
+            return Ok(e);
         }
 
-
         [HttpGet]
-        [Route("EventByName")]
-        public async Task<ActionResult<Event>> GetEventByName(string name)
+        [Route("EventsByName")]
+        public async Task<ActionResult<IEnumerable<Event>>> GetEventByName(string name)
         {
-            Event e = await db.Events.SingleOrDefaultAsync(x=>x.EventName==name);
+            //Event e = await db.Events.Where(x=>x.EventName==name);
+
+            List<Event> e=await db.Events.Where(item => item.EventName == name)
+                       .ToListAsync();
+            
+            if(!e.Any())
+            return NotFound();
+            else
             return Ok(e);
         }
     }
