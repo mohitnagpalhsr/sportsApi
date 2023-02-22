@@ -17,6 +17,7 @@ namespace SportsEventProject.Controllers
         [HttpGet]
         public async Task<ActionResult> GetEvents()
         {
+            
             return Ok(await db.Events.ToListAsync());
 
         }
@@ -58,12 +59,39 @@ namespace SportsEventProject.Controllers
         }
 
         [HttpGet]
+        [Route("EventByName")]
+        public async Task<ActionResult<Event>> GetEventByName(string name)
+        {
+            Event e = await db.Events.SingleOrDefaultAsync(x=>x.EventName==name);
+            
+            if(e is null)
+            return NotFound();
+            else
+            return Ok(e);
+        }
+
+        [HttpGet]
         [Route("EventsByName")]
-        public async Task<ActionResult<IEnumerable<Event>>> GetEventByName(string name)
+        public async Task<ActionResult<IEnumerable<Event>>> GetEventsByName(string name)
         {
             //Event e = await db.Events.Where(x=>x.EventName==name);
 
             List<Event> e=await db.Events.Where(item => item.EventName == name)
+                       .ToListAsync();
+            
+            if(!e.Any())
+            return NotFound();
+            else
+            return Ok(e);
+        }
+
+        [HttpGet]
+        [Route("EventsHavingSport")]
+        public async Task<ActionResult<IEnumerable<Event>>> EventsHavingSport(string name)
+        {
+            //Event e = await db.Events.Where(x=>x.EventName==name);
+
+            List<Event> e=await db.Events.Where(item => item.SportsName == name)
                        .ToListAsync();
             
             if(!e.Any())
