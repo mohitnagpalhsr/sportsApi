@@ -91,7 +91,7 @@ namespace SportsEventProject.Controllers
         {
             //Event e = await db.Events.Where(x=>x.EventName==name);
 
-            List<Event> e=await db.Events.Where(item => item.SportsName == name)
+            List<Event> e=await db.Events.Where(item => (item.SportsName == name) && item.Status == "scheduled")
                        .ToListAsync();
             
             if(!e.Any())
